@@ -24,7 +24,7 @@ jobs :
             git add .
             git commit -m "LN-00-server : server commit modified file"
             git pull origin main
-            npx lerna bootstrap --hoist
+            sudo lerna bootstrap --hoist
 
       - name: Deploy Lerna-API with github action
         uses: appleboy/ssh-action@master
