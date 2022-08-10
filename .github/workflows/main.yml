@@ -24,6 +24,7 @@ jobs :
             git add .
             git commit -m "LN-00-server : server commit modified file"
             git pull origin main
+            lerna bootstrap --hoist
 
       - name: Deploy Lerna-API with github action
         uses: appleboy/ssh-action@master
@@ -33,9 +34,7 @@ jobs :
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
-            cd monorepo-lerna
-            lerna bootstrap --hoist
-            cd ./packages/api-express/
+            cd ./monorepo-lerna/packages/api-express
             pm2 start index.js --name lerna-api
       
       - name: Deploy Lerna-REACT with github action
@@ -46,6 +45,7 @@ jobs :
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
+            mkdir -p /var/www/html/fp1-test.purwadhikabootcamp.com
             cd ./monorepo-lerna/packages/ui-react
             npm run build
             rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/html/fp1-test.purwadhikabootcamp.com
