@@ -12,22 +12,31 @@ jobs :
     steps:
       - uses: actions/checkout@v2
       
+      - name: Check commited before
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          script: |
+            cd monorepo-lerna
+            git add .
+            git commit -m "LN-00-server : server commit modified file"
+            git pull origin main
+
       - name: Deploy Lerna-API with github action
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.SSH_HOST}}
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
-          port: 22
+          port: ${{secrets.SSH_PORT}}
           script: |
             cd monorepo-lerna
-            git add .
-            git commit -m "LN-00-server : server commit modified file"
-            git pull origin main
             lerna bootstrap --hoist
             cd ./packages/api-express/
-            pm2 reload lerna-api
-            pm2 restart lerna-api
+            pm2 start index.js --name lerna-api
       
       - name: Deploy Lerna-REACT with github action
         uses: appleboy/ssh-action@master
@@ -35,8 +44,8 @@ jobs :
           host: ${{secrets.SSH_HOST}}
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
-          port: 22
+          port: ${{secrets.SSH_PORT}}
           script: |
             cd ./monorepo-lerna/packages/ui-react
             npm run build
-            rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/jcah.com
+            rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/html/fp1-test.purwadhikabootcamp.com

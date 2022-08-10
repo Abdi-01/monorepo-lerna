@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Try <code>Monorepo Lerna</code> React and Express.
+          Try Monorepo Lerna React and Express.
         </p>
         <a
           className="App-link"
