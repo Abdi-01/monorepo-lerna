@@ -39,4 +39,4 @@ jobs :
           script: |
             cd ./monorepo-lerna/packages/ui-react
             npm run build
-            cp /root/monorepo-lerna/packages/ui-react/build/* /var/www/jcah.com
+            rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/jcah.com
