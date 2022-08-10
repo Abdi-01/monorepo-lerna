@@ -36,7 +36,8 @@ jobs :
           port: ${{secrets.SSH_PORT}}
           script: |
             cd ./monorepo-lerna/packages/api-express
-            pm2 start index.js --name lerna-api
+            pm2 reload lerna-api
+            pm2 restart lerna-api
       
       - name: Deploy Lerna-REACT with github action
         uses: appleboy/ssh-action@master
@@ -46,7 +47,6 @@ jobs :
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
-            mkdir -p /var/www/html/fp1-test.purwadhikabootcamp.com
             cd ./monorepo-lerna/packages/ui-react
             npm run build
             rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/html/fp1-test.purwadhikabootcamp.com
