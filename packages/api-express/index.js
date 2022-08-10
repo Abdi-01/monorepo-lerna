@@ -27,7 +27,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res, next) => {
-    res.status(200).send('<h1>API Express with LERNA</h1>')
+    res.status(200).send('<h1>API Express with LERNA v1.0</h1>')
 })
 
 app.listen(PORT, (err) => {

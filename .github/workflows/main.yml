@@ -26,7 +26,8 @@ jobs :
             git pull origin main
             lerna bootstrap --hoist
             cd ./packages/api-express/
-            pm2 start index.js --name lerna-api
+            pm2 reload lerna-api
+            pm2 restart lerna-api
       
       - name: Deploy Lerna-REACT with github action
         uses: appleboy/ssh-action@master
