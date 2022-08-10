@@ -23,7 +23,7 @@ jobs :
             cd monorepo-lerna
             git add .
             git commit -m "LN-00-server : server commit modified file"
-            git pull origin development
+            git pull origin main
             lerna bootstrap --hoist
             cd ./packages/api-express/
             pm2 start index.js --name lerna-api
