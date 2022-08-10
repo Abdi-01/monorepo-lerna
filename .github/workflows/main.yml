@@ -24,7 +24,7 @@ jobs :
             git add .
             git commit -m "LN-00-server : server commit modified file"
             git pull origin main
-            sudo lerna bootstrap --hoist
+            lerna bootstrap --hoist
             echo Comitted Success
 
       - name: Deploy Lerna-API with github action
