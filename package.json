@@ -13,7 +13,6 @@
     "test": "lerna run test"
   },
   "dependencies": {
-    "mysql": "^2.18.1",
     "nx": "^14.5.4"
   }
 }
