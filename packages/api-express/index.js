@@ -12,13 +12,13 @@ const dbConf = mysql.createPool({
 });
 
 // DB Check Connection
-dbConf.getConnection((error,connection)=>{
-    if(error){
-        console.log("Error MySQL Connection", error.sqlMessage);
-    }
+// dbConf.getConnection((error,connection)=>{
+//     if(error){
+//         console.log("Error MySQL Connection", error.sqlMessage);
+//     }
 
-    console.log(`Connect MySQL ✅ : ${connection.threadId}`);
-})
+//     console.log(`Connect MySQL ✅ : ${connection.threadId}`);
+// })
 
 
 const PORT = process.env.PORT;
