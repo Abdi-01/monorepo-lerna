@@ -27,3 +27,15 @@ jobs :
             lerna bootstrap --hoist
             cd ./packages/api-express/
             pm2 start index.js --name lerna-api
+      
+      - name: Deploy Lerna-REACT with github action
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: 22
+          script: |
+            cd ./monorepo-lerna/packages/ui-react
+            npm run build
+            cp /root/monorepo-lerna/packages/ui-react/build/* /var/www/jcah.com
