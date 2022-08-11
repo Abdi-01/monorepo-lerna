@@ -38,25 +38,25 @@ jobs :
           key: ${{secrets.SSH_KEY}}
       
       # STEP 3 : Copy api project
-      # - name: Deploy Server API with github action
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{secrets.SSH_HOST}}
-      #     username: ${{secrets.SSH_USER}}
-      #     key: ${{secrets.SSH_KEY}}
-      #     port: ${{secrets.SSH_PORT}}
-      #     source: "./packages/api-express"
-      #     target: "/var/www/html/lerna-test-api.purwadhikabootcamp.com"
-      
+      - name: Deploy Server API with github action
+        uses: nogsantos/scp-deploy@master
+        with:
+          src: ./packages/api-express/*
+          host: ${{secrets.SSH_HOST}}
+          remote: "/var/www/html/lerna-test-api.purwadhikabootcamp.com"
+          port: ${{secrets.SSH_PORT}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          
       # STEP 4 : Running API
-      # - name: Install and Run Server API
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{secrets.SSH_HOST}}
-      #     username: ${{secrets.SSH_USER}}
-      #     key: ${{secrets.SSH_KEY}}
-      #     port: ${{secrets.SSH_PORT}}
-      #     script: |
-      #       cd /var/www/html/lerna-test-api.purwadhikabootcamp.com
-      #       npm install
-      #       pm2 start deploy-staging.config.js
+      - name: Install and Run Server API
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          script: |
+            cd /var/www/html/lerna-test-api.purwadhikabootcamp.com
+            npm install
+            pm2 start deploy-staging.config.js
