@@ -28,15 +28,14 @@ jobs :
 
       # STEP 2 : Copy build file at VPS server
       - name: Deploy Client React App with github action
-        uses: appleboy/scp-action@master
+        uses: nogsantos/scp-deploy@master
         with:
+          src: ./packages/ui-react/build/*
           host: ${{secrets.SSH_HOST}}
+          remote: "/var/www/html/lerna-test.purwadhikabootcamp.com"
+          port: ${{secrets.SSH_PORT}}
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
-          port: ${{secrets.SSH_PORT}}
-          source: "./build"
-          target: "/var/www/html/lerna-test.purwadhikabootcamp.com"
-        working-directory: ./packages/ui-react
       
       # STEP 3 : Copy api project
       # - name: Deploy Server API with github action
