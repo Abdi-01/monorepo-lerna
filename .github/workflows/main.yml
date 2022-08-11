@@ -12,6 +12,11 @@ jobs :
     steps:
       - uses: actions/checkout@v2
       
+      # STEP 1
+      # Mengakses project monorepo yang digunakan
+      # Melakukan commit perubahan data project menggunakan git
+      # Menjalankan git pull untuk mendapat data project yang terbaru
+      # Melakukan instalasi ulang module dengan lerna
       - name: Check commited before
         uses: appleboy/ssh-action@master
         with:
@@ -27,6 +32,10 @@ jobs :
             lerna bootstrap --hoist
             echo Comitted Success
 
+      # STEP 2
+      # Mengakses directory project back-end 
+      # Jika pertama kali running action gunakan perintah pm2 start index.js --name project-name
+      # Action selanjutnya gunakan pm2 restart project-name 
       - name: Deploy Lerna-API with github action
         uses: appleboy/ssh-action@master
         with:
@@ -36,10 +45,14 @@ jobs :
           port: ${{secrets.SSH_PORT}}
           script: |
             cd ./monorepo-lerna/packages/api-express
-            pm2 reload lerna-api
             pm2 restart lerna-api
       
-      - name: Deploy Lerna-REACT with github action
+      # STEP 3
+      # Membuat directory build FE di NGINX. Gunakan saat pertama kali menggunakan action. 
+      # Mengakses project front-end.
+      # Menjalankan perintah build react.
+      # Menyalin hasil build ke directory NGINX.
+      - name: STEP 3 Deploy Lerna-REACT with github action
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.SSH_HOST}}
@@ -47,6 +60,7 @@ jobs :
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
+            # mkdir -p /var/www/html/fp1-test.purwadhikabootcamp.com
             cd ./monorepo-lerna/packages/ui-react
             npm run build
             rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/html/fp1-test.purwadhikabootcamp.com
