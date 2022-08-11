@@ -34,7 +34,7 @@ jobs :
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
-          source: "./packages/ui-react/build"
+          source: "./ui-react/build"
           target: "/var/www/html/lerna-test.purwadhikabootcamp.com"
       
       # STEP 3 : Copy api project
@@ -45,7 +45,7 @@ jobs :
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
-          source: "./packages/api-express*"
+          source: "./api-express"
           target: "/var/www/html/lerna-test-api.purwadhikabootcamp.com"
       
       # STEP 4 : Running API
