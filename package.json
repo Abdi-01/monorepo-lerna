@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "lerna run start",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "build": "lerna run build --stream"
   },
   "dependencies": {
     "nx": "^14.5.4"

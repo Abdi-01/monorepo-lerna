@@ -8,59 +8,55 @@ on :
 jobs :
   cd:
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       
-      # STEP 1
-      # Mengakses project monorepo yang digunakan
-      # Melakukan commit perubahan data project menggunakan git
-      # Menjalankan git pull untuk mendapat data project yang terbaru
-      # Melakukan instalasi ulang module dengan lerna
-      - name: Check commited before
-        uses: appleboy/ssh-action@master
+      # STEP 1 : BUILD project at github
+      - name: BUILD CLIENT FE Project
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.SSH_KEY}}
-          port: ${{secrets.SSH_PORT}}
-          script: |
-            cd monorepo-lerna
-            git add .
-            git commit -m "LN-00-server : server commit modified file"
-            git pull origin main
-            lerna bootstrap --hoist
-            echo Comitted Success
-
-      # STEP 2
-      # Mengakses directory project back-end 
-      # Jika pertama kali running action gunakan perintah pm2 start index.js --name project-name
-      # Action selanjutnya gunakan pm2 restart project-name 
-      - name: Deploy Lerna-API with github action
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.SSH_KEY}}
-          port: ${{secrets.SSH_PORT}}
-          script: |
-            cd ./monorepo-lerna/packages/api-express
-            pm2 restart lerna-api
-      
-      # STEP 3
-      # Membuat directory build FE di NGINX. Gunakan saat pertama kali menggunakan action. 
-      # Mengakses project front-end.
-      # Menjalankan perintah build react.
-      # Menyalin hasil build ke directory NGINX.
-      - name: STEP 3 Deploy Lerna-REACT with github action
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.SSH_KEY}}
-          port: ${{secrets.SSH_PORT}}
-          script: |
-            # mkdir -p /var/www/html/fp1-test.purwadhikabootcamp.com
-            cd ./monorepo-lerna/packages/ui-react
+          node-version: ${{ matrix.node-version }}
+      - name: Build Project
+        run: |
+            npm install
             npm run build
-            rsync -a /root/monorepo-lerna/packages/ui-react/build/ /var/www/html/fp1-test.purwadhikabootcamp.com
+
+      # STEP 2 : Copy build file at VPS server
+      - name: Deploy Client React App with github action
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          source: "/packages/ui-react/build/"
+          target: "/var/www/html/lerna-test.purwadhikabootcamp.com"
+      
+      # STEP 3 : Copy api project
+      - name: Deploy Server API with github action
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          source: "/packages/api-express/"
+          target: "/var/www/html/lerna-test-api.purwadhikabootcamp.com"
+      
+      # STEP 4 : Running API
+      - name: Deploy Server API with github action
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          script: |
+            cd /var/www/html/lerna-test-api.purwadhikabootcamp.com
+            npm install
+            pm2 start deploy-staging.config.js
